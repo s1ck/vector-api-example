@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-public class VectorizationBenchmark {
+public class Example1Benchmark {
 
     @Param({"10000", "100000", "1000000", "10000000", "100000000"})
     int size;
@@ -34,20 +34,20 @@ public class VectorizationBenchmark {
     }
 
     @Benchmark
-    public float[] scalarComputation() {
-        Vectorization.scalarComputation(a, b, c);
+    public float[] scalar() {
+        Example1.scalar(a, b, c);
         return c;
     }
 
     @Benchmark
-    public float[] vectorComputation() {
-        Vectorization.vectorComputation(a, b, c);
+    public float[] vectorWithMask() {
+        Example1.vectorWithMask(a, b, c);
         return c;
     }
 
     @Benchmark
-    public float[] vectorComputationWithRemainder() {
-        Vectorization.vectorComputationWithRemainder(a, b, c);
+    public float[] vectorWithoutMask() {
+        Example1.vectorWithoutMask(a, b, c);
         return c;
     }
 

@@ -5,9 +5,9 @@ import jdk.incubator.vector.VectorSpecies;
 
 import java.util.Arrays;
 
-public class Vectorization {
+public class Example1 {
 
-    static void scalarComputation(float[] a, float[] b, float[] c) {
+    static void scalar(float[] a, float[] b, float[] c) {
         for (int i = 0; i < a.length; i++) {
             c[i] = (a[i] * a[i] + b[i] * b[i]) * -1.0f;
         }
@@ -19,10 +19,9 @@ public class Vectorization {
         System.out.println("SPECIES.length() = " + SPECIES.length());
     }
 
-    static void vectorComputation(float[] a, float[] b, float[] c) {
+    static void vectorWithMask(float[] a, float[] b, float[] c) {
         for (int i = 0; i < a.length; i += SPECIES.length()) {
             var m = SPECIES.indexInRange(i, a.length);
-            // FloatVector va, vb, vc;
             var va = FloatVector.fromArray(SPECIES, a, i, m);
             var vb = FloatVector.fromArray(SPECIES, b, i, m);
             var vc = va.mul(va).add(vb.mul(vb)).neg();
@@ -30,17 +29,16 @@ public class Vectorization {
         }
     }
 
-    static void vectorComputationWithRemainder(float[] a, float[] b, float[] c) {
+    static void vectorWithoutMask(float[] a, float[] b, float[] c) {
         int i = 0;
         int upperBound = SPECIES.loopBound(a.length);
         for (; i < upperBound; i += SPECIES.length()) {
-            // FloatVector va, vb, vc;
             var va = FloatVector.fromArray(SPECIES, a, i);
             var vb = FloatVector.fromArray(SPECIES, b, i);
             var vc = va.mul(va).add(vb.mul(vb)).neg();
             vc.intoArray(c, i);
         }
-
+        // Process remainder
         for (; i < a.length; i++) {
             c[i] = (a[i] * a[i] + b[i] * b[i]) * -1.0f;
         }
@@ -60,9 +58,7 @@ public class Vectorization {
         b[size / 3] = 84;
 
         for (int i = 0; i < 100_000; i++) {
-            vectorComputationWithRemainder(a, b, c);
+            vectorWithoutMask(a, b, c);
         }
-
-        System.out.println("foobar = " + c[0]);
     }
 }
