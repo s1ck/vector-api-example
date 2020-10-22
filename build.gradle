@@ -25,7 +25,12 @@ java {
 application {
     mainClass = 'examples.Vectorization'
 //    applicationDefaultJvmArgs = ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintAssembly', '-XX:-UseSuperWord', '--add-modules', 'jdk.incubator.vector']
-    applicationDefaultJvmArgs = ['-XX:+UnlockDiagnosticVMOptions', '-XX:+PrintAssembly', '--add-modules', 'jdk.incubator.vector']
+    applicationDefaultJvmArgs = [
+            '-XX:+UnlockDiagnosticVMOptions',
+//            '-XX:+PrintAssembly',
+            '-XX:CompileCommand=print,examples/Vectorization.vectorComputationWithRemainder',
+            '--add-modules', 'jdk.incubator.vector'
+    ]
 }
 
 jmh {
