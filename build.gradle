@@ -30,9 +30,19 @@ application {
 
 jmh {
     jvmArgs = ['--add-modules', 'jdk.incubator.vector']
+    include = ['StreamVByteBenchmark']
 }
 
 dependencies {
     jmh group: 'org.openjdk.jmh',      name: 'jmh-core',         version: '1.26'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+test {
+    jvmArgs += ['--add-modules', 'jdk.incubator.vector']
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
