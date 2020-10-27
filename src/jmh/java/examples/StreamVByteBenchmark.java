@@ -2,8 +2,10 @@ package examples;
 
 import org.openjdk.jmh.annotations.*;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 @Fork(value = 1, jvmArgsAppend = {"--add-modules", "jdk.incubator.vector"})
 @Warmup(iterations = 5, time = 1)
@@ -31,9 +33,11 @@ public class StreamVByteBenchmark {
         controlBytes = new byte[StreamVByte.controlBytesLen(size)];
         encoded = new byte[input.length * Integer.BYTES]; // worst case
 
-        for (int i = 0; i < size; i++) {
-            input[i] = Math.abs(r.nextInt());
-        }
+        input = Stream.generate(() -> new int[]{42, 1337, 133742, 42133742}).flatMapToInt(Arrays::stream).limit(size).toArray();
+
+//        for (int i = 0; i < size; i++) {
+//            input[i] = Math.abs(r.nextInt());
+//        }
 
         StreamVByte.scalar().encode(input, controlBytes, encoded);
     }
@@ -44,7 +48,12 @@ public class StreamVByteBenchmark {
     }
 
     @Benchmark
-    public int scalarDecode() {
-        return StreamVByte.scalar().decode(encoded, controlBytes, output).nums;
+    public int vectorEncode() {
+        return StreamVByte.vectorized().encode(input, controlBytes, encoded).nums;
     }
+
+//    @Benchmark
+//    public int scalarDecode() {
+//        return StreamVByte.scalar().decode(encoded, controlBytes, output).nums;
+//    }
 }

@@ -3,30 +3,43 @@ package examples;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StreamVByteTest {
 
-    @Test
-    void encode() {
-        int[] input = {1, 3, 42, 1024};
+    @ParameterizedTest
+    @MethodSource("implementations")
+    void encode(StreamVByte impl) {
+        int[] input = {42, 1337, 133742, 42133742};
         byte[] controlBytes = new byte[StreamVByte.controlBytesLen(input.length)];
         byte[] encoded = new byte[input.length * Integer.BYTES]; // worst case assumption
 
-        var res = StreamVByte.scalar().encode(input, controlBytes, encoded);
+        var res = impl.encode(input, controlBytes, encoded);
         int numsEncoded = res.nums;
         int bytesWritten = res.bytes;
 
         assertEquals(4, numsEncoded);
-        assertEquals(5, bytesWritten);
-        assertArrayEquals(new byte[]{64}, controlBytes);
-        assertArrayEquals(new byte[]{1, 3, 42, 0, 4}, Arrays.copyOf(encoded, bytesWritten));
+        assertEquals(10, bytesWritten);
+        assertArrayEquals(new byte[]{-28}, controlBytes);
+        var actualBytes = Arrays.copyOf(encoded, bytesWritten);
+        assertArrayEquals(new byte[]{
+            0X2A, 0X39, 0X5, 0X6E, 0XA, 0X2, (byte) 0xEE, (byte) 0XE8, (byte) 0X82, 0X2,
+        }, actualBytes);
+    }
+
+    static Stream<StreamVByte> implementations() {
+        return Stream.of(
+            StreamVByte.scalar(),
+            StreamVByte.vectorized()
+        );
     }
 
     @Test
