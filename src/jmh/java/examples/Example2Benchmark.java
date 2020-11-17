@@ -5,7 +5,7 @@ import org.openjdk.jmh.annotations.*;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-@Fork(value = 1)
+@Fork(value = 1, jvmArgsAppend = {"--add-modules", "jdk.incubator.vector"})
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 10, time = 1)
 @State(Scope.Benchmark)
