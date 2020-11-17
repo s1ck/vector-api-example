@@ -43,22 +43,4 @@ public class Example1 {
             c[i] = (a[i] * a[i] + b[i] * b[i]) * -1.0f;
         }
     }
-
-    public static void main(String[] args) {
-        var size = 100_000;
-
-        var a = new float[size];
-        var b = new float[size];
-        var c = new float[size];
-        Arrays.fill(a, 42);
-        Arrays.fill(b, 42);
-        a[size / 2] = 23;
-        b[size / 2] = 23;
-        a[size / 3] = 84;
-        b[size / 3] = 84;
-
-        for (int i = 0; i < 100_000; i++) {
-            vectorWithoutMask(a, b, c);
-        }
-    }
 }

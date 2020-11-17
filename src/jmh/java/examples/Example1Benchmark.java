@@ -22,15 +22,9 @@ public class Example1Benchmark {
 
     @Setup
     public void setup() {
-        a = new float[size];
-        b = new float[size];
+        a = Util.floatArray(size);
+        b = Util.floatArray(size);
         c = new float[size];
-        Arrays.fill(a, 42);
-        Arrays.fill(b, 42);
-        a[size / 2] = 23;
-        b[size / 2] = 23;
-        a[size / 3] = 84;
-        b[size / 3] = 84;
     }
 
     @Benchmark
