@@ -38,4 +38,15 @@ public class Example0Benchmark {
         Example0.vector_add(a, b, c);
         return c;
     }
+
+    @Benchmark
+    public float dot_product() {
+        return Example0.dot_product(a, b);
+    }
+
+    @Fork(jvmArgsAppend = "-XX:-UseSuperWord")
+    @Benchmark
+    public float dot_product_no_auto() {
+        return Example0.dot_product(a, b);
+    }
 }
